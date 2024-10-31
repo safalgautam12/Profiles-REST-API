@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser #models requred to override
 from django.contrib.auth.models import PermissionsMixin#contd.. default django auth
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings
 
 
 # Create your models here.
@@ -56,3 +57,18 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     def __str__(self):
         """Return string representation of the user """
         return self.email
+    
+    
+class ProfileFeedItem(models.Model):
+    """Profile status update"""
+    user_profile=models.ForeignKey(
+        settings.AUTH_USER_MODEL,#establishes a many to one relationship allowing multiple feeds
+        on_delete= models.CASCADE,#removes the associated field when deleting user
+        
+    )    
+    status_text = models.CharField(max_length=255)
+    created_on=models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        """Return the model as a string"""
+        return self.status_text
